@@ -3,8 +3,8 @@ import torch
 import torch.nn as nn
 
 class DiceScoreCoefficient(nn.Module):
-    def _init_(self, n_classes):
-        super(DiceScoreCoefficient, self)._init_()
+    def __init__(self, n_classes):
+        super(DiceScoreCoefficient, self).__init__()
         self.n_classes = n_classes
         self.confusion_matrix = np.zeros((self.n_classes, self.n_classes))
 
