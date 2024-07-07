@@ -2,8 +2,8 @@ from torchvision.models import resnet
 from torch import nn
 
 class DecoderBlock(nn.Module):
-    def _init_(self, in_channels, n_filters):
-        super()._init_()
+    def __init__(self, in_channels, n_filters):
+        super().__init__()
 
         # B, C, H, W -> B, C/4, H, W
         self.conv1 = nn.Conv2d(in_channels, in_channels // 4, 1)
@@ -35,8 +35,8 @@ class DecoderBlock(nn.Module):
 
 
 class LinkNet(nn.Module):
-    def _init_(self, num_classes, num_channels=3, encoder='resnet50'):
-        super()._init_()
+    def __init__(self, num_classes, num_channels=3, encoder='resnet50'):
+        super().__init__()
         assert encoder in ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
 
         filters = [256, 512, 1024, 2048]
