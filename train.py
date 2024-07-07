@@ -87,9 +87,9 @@ def adjust_kappa(mm):
 ###### main ######
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tvMF Dice loss')
-    parser.add_argument('--classes', '-c', type=int, default=4)
-    parser.add_argument('--batchsize', '-b', type=int, default=24)
-    parser.add_argument('--num_epochs', '-e', type=int, default=200)
+    parser.add_argument('--classes', '-c', type=int, default=3)
+    parser.add_argument('--batchsize', '-b', type=int, default=16)
+    parser.add_argument('--num_epochs', '-e', type=int, default=50)
     parser.add_argument('--maxiter', '-m', type=int, default=4000)
     parser.add_argument('--alpha', '-a', type=float, default=32.0)
     parser.add_argument('--dataset', '-i', default='./Dataset')
@@ -112,12 +112,12 @@ if __name__ == '__main__':
     PATH_2 = "{}/testloss.txt".format(args.out)
     PATH_3 = "{}/DSC.txt".format(args.out)
 
-    with open(PATH_1, mode = 'w') as f:
-        pass
-    with open(PATH_2, mode = 'w') as f:
-        pass
-    with open(PATH_3, mode = 'w') as f:
-        pass
+    with open(PATH_1, mode = 'a') as f:
+        f.write(f"seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
+    with open(PATH_2, mode = 'a') as f:
+        f.write(f"seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
+    with open(PATH_3, mode = 'a') as f:
+        f.write(f"seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
 
     # seed #
     random.seed(args.seed)
