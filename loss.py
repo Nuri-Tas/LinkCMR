@@ -6,8 +6,8 @@ import torch.nn.functional as F
 
 ##### Adaptive tvMF Dice loss #####
 class Adaptive_tvMF_DiceLoss(nn.Module):
-    def _init_(self, n_classes):
-        super(Adaptive_tvMF_DiceLoss, self)._init_()
+    def __init__(self, n_classes):
+        super(Adaptive_tvMF_DiceLoss, self).__init__()
         self.n_classes = n_classes
 
     ### one-hot encoding ###
