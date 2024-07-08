@@ -10,7 +10,7 @@ import torch
 import torch.nn.functional as F
 
 import utils as ut
-from dataset import ACDC_Dataset
+from dataset import ACDC_Dataset, CVCClinicDB_Dataset
 from linknet import LinkNet
 from dsc import DiceScoreCoefficient
 
@@ -80,7 +80,7 @@ def class_pixel_accuracy(gt_masks, pred_masks, num_classes):
     return class_acc
 
 ### test ###
-def test():
+def test(n_classes):
     model_path = "{}/model/model_bestdsc.pth".format(args.out)
     model.load_state_dict(torch.load(model_path))
     model.eval()
@@ -112,14 +112,13 @@ def test():
 
 
         print("Dice")
-        print("class 0  = %f" % (dsc[0]))
-        print("class 1  = %f" % (dsc[1]))
-        print("class 2  = %f" % (dsc[2]))
-        print("class 3  = %f" % (dsc[3]))
+        for i in range(n_classes):
+            print(f"class {i}  = {dsc[i]}")
+            
         print("mDice     = %f" % (np.mean(dsc)))
         
         with open(PATH, mode = 'a') as f:
-            f.write("%f\t%f\t%f\n" % (dsc[0], dsc[1], np.mean(dsc)))
+            f.write("%f\t%f\t%f\n" % ((dsc[i] for i in range(n_classes)), np.mean(dsc)))
 
 
 ###### main ######
@@ -153,8 +152,8 @@ if __name__ == '__main__':
 
     PATH = "{}/predict.txt".format(args.out)
 
-    with open(PATH, mode = 'w') as f:
-        pass
+    with open(PATH, mode = 'a') as f:
+        f.write(f"dataset: {args.dataset}, seed: {args.seed}, results: ")
 
 
     # seed #
@@ -169,7 +168,13 @@ if __name__ == '__main__':
                                     ut.ExtToTensor(),
                                    ])
     # data loader #
-    data_test = ACDC_Dataset(dataset_type='test', transform=test_transform)
+    if args.dataset == "ACDC":
+        assert args.classes == 3
+        data_test = ACDC_Dataset(dataset_type='test', transform=test_transform)
+    elif args.dataset == "CVC_Clinical":
+        assert args.classes == 2
+        data_test = CVCClinicDB_Dataset(dataset_type='test', transform=test_transform)
+        
     test_loader = torch.utils.data.DataLoader(data_test, batch_size=args.batchsize, shuffle=False, drop_last=True, num_workers=2)
 
     # model #
@@ -180,4 +185,4 @@ if __name__ == '__main__':
     print("Total_params : %d" % pytorch_total_params)
 
     ### test ###
-    test()
+    test(args.classes)
