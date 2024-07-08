@@ -8,14 +8,14 @@ from PIL import Image
 class ACDC_Dataset(data.Dataset):
     def __init__(self, dataset_type='train', transform=None):
         self.dataset_type = dataset_type
-        self.train_image = sorted(os.listdir("Dataset/train/Original"))
-        self.train_gt = sorted(os.listdir("Dataset/train/GroundTruth"))
+        self.train_image = sorted(os.listdir("Dataset/ACDC/train/Original"))
+        self.train_gt = sorted(os.listdir("Dataset/ACDC/train/GroundTruth"))
 
-        self.val_image = sorted(os.listdir("Dataset/val/Original"))
-        self.val_gt = sorted(os.listdir("Dataset/val/GroundTruth"))
+        self.val_image = sorted(os.listdir("Dataset/ACDC/val/Original"))
+        self.val_gt = sorted(os.listdir("Dataset/ACDC/val/GroundTruth"))
 
-        self.test_image = sorted(os.listdir("Dataset/test/Original"))
-        self.test_gt = sorted(os.listdir("Dataset/test/GroundTruth"))
+        self.test_image = sorted(os.listdir("Dataset/ACDC/test/Original"))
+        self.test_gt = sorted(os.listdir("Dataset/ACDC/test/GroundTruth"))
 
         self.transform = transform
 
@@ -32,10 +32,44 @@ class ACDC_Dataset(data.Dataset):
     def __getitem__(self, index):
         img_name = self.images[index]
         label_name = self.labels[index]
-        image = Image.open(f"/YOUR-DATA-PATH/Dataset/{self.dataset_type}/Original/" + img_name).convert("RGB")
-        label = Image.open(f"/YOUR-DATA-PATH/Dataset/{self.dataset_type}/GroundTruth/" + label_name).convert("L")
+        image = Image.open(f"Dataset/ACDC/{self.dataset_type}/Original/" + img_name).convert("RGB")
+        label = Image.open(f"/Dataset/ACDC/{self.dataset_type}/GroundTruth/" + label_name).convert("L")
         label = np.array(label)
         mask = Image.fromarray(np.uint8(label))
+
+        if self.transform:
+            image, mask = self.transform(image, mask)
+        return image, mask
+
+    def __len__(self):
+        return len(self.images)
+
+
+class CVCClinicDB_Dataset(data.Dataset):
+    def __init__(self, dataset_type='train', transform=None):
+        self.item_image = sorted(os.listdir("Dataset/CVC_Clinical_DB/Original"))
+        self.item_gt = sorted(os.listdir("Dataset/CVC_Clinical_DB/GroundTruth"))
+
+        self.transform = transform
+
+        if dataset_type=='train':
+            self.images = self.item_image[:368]
+            self.labels = self.item_gt[:368]
+        elif dataset_type=='val':
+            self.images = self.item_image[368:490]
+            self.labels = self.item_gt[368:490]
+        elif dataset_type=='test':
+            self.images = self.item_image[490:]
+            self.labels = self.item_gt[490:]
+
+    def __getitem__(self, index):
+        img_name = self.images[index]
+        label_name = self.labels[index]
+        image = Image.open("Dataset/CVC_Clinical_DB/Original/" + img_name).convert("RGB")
+        label = Image.open("Dataset/CVC_Clinical_DB/GroundTruth/" + label_name).convert("L")
+        label = np.array(label)
+        mask = np.where(label>200, 1, 0)
+        mask = Image.fromarray(np.uint8(mask))
 
         if self.transform:
             image, mask = self.transform(image, mask)
