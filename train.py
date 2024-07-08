@@ -9,7 +9,7 @@ import torch.nn.functional as F
 import numpy as np
 
 import utils as ut
-from dataset import ACDC_Dataset
+from dataset import ACDC_Dataset, CVCClinicDB_Dataset
 from linknet import LinkNet
 from loss import Adaptive_tvMF_DiceLoss
 from dsc import DiceScoreCoefficient
@@ -87,12 +87,12 @@ def adjust_kappa(mm):
 ###### main ######
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tvMF Dice loss')
-    parser.add_argument('--classes', '-c', type=int, default=3)
+    parser.add_argument('--classes', '-c', type=int, default=2)
     parser.add_argument('--batchsize', '-b', type=int, default=16)
     parser.add_argument('--num_epochs', '-e', type=int, default=50)
     parser.add_argument('--maxiter', '-m', type=int, default=4000)
     parser.add_argument('--alpha', '-a', type=float, default=32.0)
-    parser.add_argument('--dataset', '-i', default='./Dataset')
+    parser.add_argument('--dataset', '-i', default='CVC_Clinical')
     parser.add_argument('--out', '-o', type=str, default='result')
     parser.add_argument('--gpu', '-g', type=str, default=0)
     parser.add_argument('--seed', '-s', type=int, default=42)
@@ -138,8 +138,14 @@ if __name__ == '__main__':
                                    ])
 
     # data loader #
-    data_train = ACDC_Dataset(dataset_type='train', transform=train_transform) 
-    data_val = ACDC_Dataset(dataset_type='val', transform=val_transform)
+    if args.dataset == "ACDC":    
+        assert args.classes == 3
+        data_train = ACDC_Dataset(dataset_type='train', transform=train_transform) 
+        data_val = ACDC_Dataset(dataset_type='val', transform=val_transform)
+    elif args.dataset == "CVC_Clinical":
+        assert args.classes == 2
+        data_train = CVCClinicDB_Dataset(dataset_type='train', transform=train_transform) 
+        data_val = CVCClinicDB_Dataset(dataset_type='val', transform=val_transform)
     train_loader = torch.utils.data.DataLoader(data_train, batch_size=args.batchsize, shuffle=True, drop_last=True, num_workers=2)
     val_loader = torch.utils.data.DataLoader(data_val, batch_size=args.batchsize, shuffle=False, drop_last=True, num_workers=2)
 
