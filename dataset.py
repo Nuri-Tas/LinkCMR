@@ -48,7 +48,7 @@ class ACDC_Dataset(data.Dataset):
 class CVCClinicDB_Dataset(data.Dataset):
     def __init__(self, dataset_type='train', transform=None):
         self.item_image = sorted(os.listdir("Dataset/CVC_Clinical_DB/Original"))
-        self.item_gt = sorted(os.listdir("Dataset/CVC_Clinical_DB/GroundTruth"))
+        self.item_gt = sorted(os.listdir("Dataset/CVC_Clinical_DB/Ground Truth"))
 
         self.transform = transform
 
@@ -66,7 +66,7 @@ class CVCClinicDB_Dataset(data.Dataset):
         img_name = self.images[index]
         label_name = self.labels[index]
         image = Image.open("Dataset/CVC_Clinical_DB/Original/" + img_name).convert("RGB")
-        label = Image.open("Dataset/CVC_Clinical_DB/GroundTruth/" + label_name).convert("L")
+        label = Image.open("Dataset/CVC_Clinical_DB/Ground Truth/" + label_name).convert("L")
         label = np.array(label)
         mask = np.where(label>200, 1, 0)
         mask = Image.fromarray(np.uint8(mask))
