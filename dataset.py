@@ -6,16 +6,17 @@ import os
 from PIL import Image
 
 class ACDC_Dataset(data.Dataset):
-    def __init__(self, dataset_type='train', transform=None):
+    def __init__(self, dataset_type='train', dataset_name="ACDC", transform=None):
         self.dataset_type = dataset_type
-        self.train_image = sorted(os.listdir("Dataset/ACDC/train/Original"))
-        self.train_gt = sorted(os.listdir("Dataset/ACDC/train/GroundTruth"))
+        self.dataset_name = dataset_name
+        self.train_image = sorted(os.listdir(f"Dataset/{dataset_name}/train/Original"))
+        self.train_gt = sorted(os.listdir(f"Dataset/{dataset_name}/train/GroundTruth"))
 
-        self.val_image = sorted(os.listdir("Dataset/ACDC/val/Original"))
-        self.val_gt = sorted(os.listdir("Dataset/ACDC/val/GroundTruth"))
+        self.val_image = sorted(os.listdir(f"Dataset/{dataset_name}/val/Original"))
+        self.val_gt = sorted(os.listdir(f"Dataset/{dataset_name}/val/GroundTruth"))
 
-        self.test_image = sorted(os.listdir("Dataset/ACDC/test/Original"))
-        self.test_gt = sorted(os.listdir("Dataset/ACDC/test/GroundTruth"))
+        self.test_image = sorted(os.listdir(f"Dataset/{dataset_name}/test/Original"))
+        self.test_gt = sorted(os.listdir(f"Dataset/{dataset_name}/test/GroundTruth"))
 
         self.transform = transform
 
@@ -32,8 +33,8 @@ class ACDC_Dataset(data.Dataset):
     def __getitem__(self, index):
         img_name = self.images[index]
         label_name = self.labels[index]
-        image = Image.open(f"Dataset/ACDC/{self.dataset_type}/Original/" + img_name).convert("RGB")
-        label = Image.open(f"/Dataset/ACDC/{self.dataset_type}/GroundTruth/" + label_name).convert("L")
+        image = Image.open(f"Dataset/{self.dataset_name}/{self.dataset_type}/Original/" + img_name).convert("RGB")
+        label = Image.open(f"/Dataset/{self.dataset_name}/{self.dataset_type}/GroundTruth/" + label_name).convert("L")
         label = np.array(label)
         mask = Image.fromarray(np.uint8(label))
 
