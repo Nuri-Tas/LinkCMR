@@ -113,11 +113,11 @@ if __name__ == '__main__':
     PATH_3 = "{}/DSC.txt".format(args.out)
 
     with open(PATH_1, mode = 'a') as f:
-        f.write(f"seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
+        f.write(f"dataset: {args.dataset}, seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
     with open(PATH_2, mode = 'a') as f:
-        f.write(f"seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
+        f.write(f"dataset: {args.dataset}, seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
     with open(PATH_3, mode = 'a') as f:
-        f.write(f"seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
+        f.write(f"dataset: {args.dataset}, seed: {args.seed}, batch_size: {args.batchsize}, num_epochs: {args.num_epochs}")
 
     # seed #
     random.seed(args.seed)
@@ -138,10 +138,10 @@ if __name__ == '__main__':
                                    ])
 
     # data loader #
-    if args.dataset == "ACDC":    
+    if args.dataset == "ACDC" or args.dataset == "ACDC_Small":    
         assert args.classes == 3
-        data_train = ACDC_Dataset(dataset_type='train', transform=train_transform) 
-        data_val = ACDC_Dataset(dataset_type='val', transform=val_transform)
+        data_train = ACDC_Dataset(dataset_type='train', dataset_name=args.dataset, transform=train_transform) 
+        data_val = ACDC_Dataset(dataset_type='val', dataset_name=args.dataset, transform=val_transform)
     elif args.dataset == "CVC_Clinical":
         assert args.classes == 2
         data_train = CVCClinicDB_Dataset(dataset_type='train', transform=train_transform) 
