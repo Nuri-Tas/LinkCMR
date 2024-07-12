@@ -118,8 +118,7 @@ def test(n_classes):
         print("mDice     = %f" % (np.mean(dsc)))
         
         with open(PATH, mode = 'a') as f:
-            f.write("%f\t%f\t%f\n" % ((dsc[i] for i in range(n_classes)), np.mean(dsc)))
-
+            f.write(f"dsc scores: {[dsc[i] for i in range(n_classes)]}, mean DSC: {np.mean(dsc)}")
 
 ###### main ######
 if __name__ == '__main__':
@@ -168,9 +167,9 @@ if __name__ == '__main__':
                                     ut.ExtToTensor(),
                                    ])
     # data loader #
-    if args.dataset == "ACDC":
+    if args.dataset == "ACDC" or args.dataset == "ACDC_Small":
         assert args.classes == 3
-        data_test = ACDC_Dataset(dataset_type='test', transform=test_transform)
+        data_test = ACDC_Dataset(dataset_type='test', dataset_name=args.dataset, transform=test_transform)
     elif args.dataset == "CVC_Clinical":
         assert args.classes == 2
         data_test = CVCClinicDB_Dataset(dataset_type='test', transform=test_transform)
