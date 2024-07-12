@@ -34,7 +34,7 @@ class ACDC_Dataset(data.Dataset):
         img_name = self.images[index]
         label_name = self.labels[index]
         image = Image.open(f"Dataset/{self.dataset_name}/{self.dataset_type}/Original/" + img_name).convert("RGB")
-        label = Image.open(f"/Dataset/{self.dataset_name}/{self.dataset_type}/GroundTruth/" + label_name).convert("L")
+        label = Image.open(f"Dataset/{self.dataset_name}/{self.dataset_type}/GroundTruth/" + label_name).convert("L")
         label = np.array(label)
         mask = Image.fromarray(np.uint8(label))
 
